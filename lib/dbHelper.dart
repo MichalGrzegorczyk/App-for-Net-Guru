@@ -34,7 +34,7 @@ class DbHelper {
       CREATE TABLE favouriteValues(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
       valueId INTEGER,
-      )
+      );
     """);
   }
 
