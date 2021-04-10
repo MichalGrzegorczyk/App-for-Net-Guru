@@ -27,7 +27,7 @@ class DbHelper {
 
   void initialize(Database db, int newVersion) async {
     await db.execute("""
-      CREATE TABLE values(
+      CREATE TABLE NGValues(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         text TEXT
       );
@@ -35,6 +35,31 @@ class DbHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
       valueId INTEGER,
       );
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Exceed clients' and colleagues' expectations");
+      
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Take ownership and question the status quo in a constructive manner");  
+          
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Be brave, curious and experiment. Learn from all successes and failures");
+      
+      INSERT INTO NGValues(id,text)
+      VALUES (0,  "Act in a way that makes all of us proud");
+      
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Build an inclusive, transparent and socially responsible culture"); 
+                 
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Recognize excellence and engagement"); 
+      
+      INSERT INTO NGValues(id,text)
+      VALUES (0, "Be ambitious, grow yourself and the people around you"); 
+
+    
+    
+      
+      
     """);
   }
 
@@ -46,7 +71,7 @@ class DbHelper {
   }
 
   Future<List<Value>> getEntries() async {
-    var result = await db.query("values", orderBy: "id ASC");
+    var result = await db.query("NGValues", orderBy: "id ASC");
 
     return List.generate(result.length, (i) => Value.fromMap(result[i]));
   }

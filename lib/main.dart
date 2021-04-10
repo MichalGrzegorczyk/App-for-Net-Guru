@@ -48,17 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
 
-  void _listValues(List<String> valuesStrings){
-    for(int i = 0; i<valuesStrings.length;i++) {
-      values[i] = new Value(id: i,text: valuesStrings[i]);
-    }
-  }
 
-  void _addValuesToDb(List<Value> values) {
-    for (int i = 0; i < values.length; i++) {
-      dbHelper.insertEntry(values[i], "values");
-    }
-  }
     void _updateValues(){
       dbHelper.open().then((_) => dbHelper.getEntries().then((value) => {
         setState(() {
@@ -71,9 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    _listValues(valuesStrings);
-    _addValuesToDb(values);
-    _updateValues();
+     _updateValues();
 
     return Scaffold(
       appBar: AppBar(
@@ -102,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 animatedTexts: [
                   TyperAnimatedText(
                       values[0].text,
+
                   speed: const Duration(milliseconds: 100),
                     textStyle: const TextStyle(
                       fontFamily: 'Satisfy',
