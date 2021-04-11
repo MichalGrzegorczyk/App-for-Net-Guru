@@ -33,6 +33,10 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+
+
+
+
 class _MyHomePageState extends State<MyHomePage> {
 
   var dbHelper = DbHelper();
@@ -47,21 +51,39 @@ class _MyHomePageState extends State<MyHomePage> {
     "Recognize excellence and engagement"
   ];
 
+  int _currentValueIndex = 0;
+
+  void _nextValue(){
+    setState(() {
+      _currentValueIndex = _currentValueIndex < valuesStrings.length -1
+          ? _currentValueIndex +1
+          : 0;
+
+    });
+  }
+
+    
+
 
 
     void _updateValues(){
       dbHelper.open().then((_) => dbHelper.getEntries().then((value) => {
         setState(() {
           values = value;
+          for(int i = 0;i<values.length;i++){
+            valuesStrings[i] =values[i].text;
+          }
         })
       }));
-
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
 
-     _updateValues();
+    // _updateValues();
 
     return Scaffold(
       appBar: AppBar(
@@ -74,47 +96,46 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
       ),
       body: Center(
-
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-            width: 250.0,
-            child: DefaultTextStyle(
-              style: const TextStyle(
+           children:[
+           Typewriter(
+            text: valuesStrings[_currentValueIndex],
+            textStyle: const TextStyle(
+              fontFamily: 'Satisfy',
+              fontSize: 48.0,
+            ),
+             onComplete: _nextValue,
+          )
+            //_valuesAnimations(valuesStrings)
+     /*    SizedBox(
+          width: 250.0,
+          child: DefaultTextStyle(
+            style: const TextStyle(
                 fontSize: 30.0,
                 color: Colors.black
-              ),
-              child: AnimatedTextKit(
-                animatedTexts: [
-                  TyperAnimatedText(
-                      values[0].text,
-
-                  speed: const Duration(milliseconds: 100),
+            ),
+            child: AnimatedTextKit(
+              animatedTexts: [
+                TyperAnimatedText(
+                    valuesStrings[0],
+                    speed: const Duration(milliseconds: 100),
                     textStyle: const TextStyle(
                       fontFamily: 'Satisfy',
                       fontSize: 48.0,
                     )
-                  ),
-                  TyperAnimatedText(
-                      valuesStrings[1],
-                    speed: const Duration(milliseconds: 100),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Satisfy',
-                        fontSize: 48.0,
-                      )
-                  ),
+                )
 
-                ],
 
-                pause: const Duration(milliseconds: 5000),
-              ),
+              ],
+
+              pause: const Duration(milliseconds: 5000),
             ),
-            ),
-
+          ),
+        )*/
           ],
-        ),
+
+        )
       ),
       floatingActionButton: FloatingActionButton(
 
@@ -155,3 +176,83 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+class _TypewriterState extends State<Typewriter> {
+  String _textToType;
+  int _nextToTypeIndex;
+  String _typedText;
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    _textToType = widget.text;
+    _nextToTypeIndex = 0;
+    _typedText = '';
+
+    _typeNewText();
+
+  }
+
+
+  @override
+  void didUpdateWidget(Typewriter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if(widget.text != oldWidget.text){
+      _textToType = widget.text;
+      _nextToTypeIndex = 0;
+      _typedText ='';
+      _typeNewText();
+    }
+    
+  }
+
+  Future<void> _typeNewText() async {
+    await Future.delayed(const Duration(seconds:1));
+
+    if(!mounted){
+      return;
+    }
+    for(int i = _nextToTypeIndex; i< _textToType.length;i++){
+      await Future.delayed(const Duration(milliseconds: 110));
+      if(!mounted){
+        return;
+      }
+
+      setState(() {
+        _typedText = _textToType.substring(0,i+1);
+      });
+
+    }
+
+    await Future.delayed(const Duration(seconds: 5));
+    if(mounted){
+      widget.onComplete?.call();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          _typedText,
+          style: widget.textStyle
+        )
+      ],
+    );
+  }
+}
+class Typewriter extends StatefulWidget {
+  final String text;
+  final TextStyle textStyle;
+  final VoidCallback onComplete;
+
+  const Typewriter({Key key, this.text, this.textStyle, this.onComplete}) : super(key: key);
+
+  @override
+  _TypewriterState createState() => _TypewriterState();
+}
+
+
