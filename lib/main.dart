@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter_app/addValue.dart';
 import 'package:flutter_app/class/Value.dart';
 import 'package:flutter_app/dbHelper.dart';
+import 'class/FavValue.dart';
+import 'valuesList.dart';
+import 'favValuesList.dart';
 
 
 void main() {
@@ -40,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   var dbHelper = DbHelper();
-  List <Value> values;
+  List <Value> values =  [];
   List <String> valuesStrings = [
     "Exceed clients' and colleagues' expectations",
     "Take ownership and question the status quo in a constructive manner",
@@ -55,13 +58,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _nextValue(){
     setState(() {
-      _currentValueIndex = _currentValueIndex < valuesStrings.length -1
+      _currentValueIndex = _currentValueIndex < values.length -1
           ? _currentValueIndex +1
           : 0;
 
     });
   }
 
+    void _insertDefaultValues(){
+      String tableName = "NGValues";
+      var helper = DbHelper();
+      for(int i = 0; i<valuesStrings.length;i++){
+        helper.insertEntry(
+            new Value(
+                id:0,
+                text: valuesStrings[i]
+            ),
+            tableName
+        );
+    }
+
+
+    }
     
 
 
@@ -70,10 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
       dbHelper.open().then((_) => dbHelper.getEntries().then((value) => {
         setState(() {
           values = value;
-          for(int i = 0;i<values.length;i++){
-            valuesStrings[i] =values[i].text;
           }
-        })
+        )
       }));
   }
 
@@ -82,8 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    // _updateValues();
+    if(values.isEmpty){
+      _insertDefaultValues();
+    }
+    _updateValues();
 
     return Scaffold(
       appBar: AppBar(
@@ -91,6 +109,14 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       actions: <Widget>[
         IconButton(icon: Icon(Icons.favorite), onPressed: (){
+          var helper = DbHelper();
+          helper.insertEntry(
+              new FavValue(
+                  id:0,
+                  valueId: values[_currentValueIndex].id
+              ),
+              'favouriteValues'
+          );
 
         })
       ],
@@ -100,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
            children:[
            Typewriter(
-            text: valuesStrings[_currentValueIndex],
+            text: values[_currentValueIndex].text,
             textStyle: const TextStyle(
               fontFamily: 'Satisfy',
               fontSize: 48.0,
@@ -138,7 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ),
       floatingActionButton: FloatingActionButton(
-
+        onPressed: () =>
+            Navigator.push(
+                context, MaterialPageRoute(
+                builder: (context) => AddValueScreen()
+            )),
 
         tooltip: 'Increment',
         foregroundColor: Colors.black,
@@ -157,17 +187,27 @@ class _MyHomePageState extends State<MyHomePage> {
         unselectedItemColor: Colors.white,
         items:[
           BottomNavigationBarItem(
-            icon: Icon(Icons.format_quote_sharp,
-            size: 39,
-            color: Colors.white),
+            icon: IconButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ValuesListScreen()),
+              ),
+            color: Colors.white, icon: Icon(Icons.format_quote_sharp),),
             label: "Values",
           ),
 
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite,
-                color: Colors.white),
-            label: "Favourites",
-          ),
+            icon: IconButton(
+            onPressed: () => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => FavValuesListScreen()),
+    ),
+    color: Colors.white,
+              icon: Icon(  Icons.favorite),),
+
+            label: "Favourites"
+    )
+
         ],
       ),
       ),
@@ -254,5 +294,4 @@ class Typewriter extends StatefulWidget {
   @override
   _TypewriterState createState() => _TypewriterState();
 }
-
 
