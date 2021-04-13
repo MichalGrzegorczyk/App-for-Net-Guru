@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.green,
       ),
+      darkTheme: ThemeData.dark(),
       home: MyHomePage(title: 'NG Values'),
     );
   }
@@ -133,32 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
              onComplete: _nextValue,
           )
-            //_valuesAnimations(valuesStrings)
-     /*    SizedBox(
-          width: 250.0,
-          child: DefaultTextStyle(
-            style: const TextStyle(
-                fontSize: 30.0,
-                color: Colors.black
-            ),
-            child: AnimatedTextKit(
-              animatedTexts: [
-                TyperAnimatedText(
-                    valuesStrings[0],
-                    speed: const Duration(milliseconds: 100),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Satisfy',
-                      fontSize: 48.0,
-                    )
-                )
 
-
-              ],
-
-              pause: const Duration(milliseconds: 5000),
-            ),
-          ),
-        )*/
           ],
 
         )
