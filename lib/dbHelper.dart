@@ -20,7 +20,7 @@ class DbHelper {
   Future<void> open() async {
     if (db != null) return;
 
-    var dbPath = join(await getDatabasesPath(), 'values_database8.db');
+    var dbPath = join(await getDatabasesPath(), 'values_database9.db');
 
     db = await openDatabase(dbPath, onCreate: initialize, version: 1);
   }

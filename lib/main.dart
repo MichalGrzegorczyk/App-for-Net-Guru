@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'NG Values',
       theme: ThemeData(
-
+        fontFamily: 'ZenDots',
         primarySwatch: Colors.green,
       ),
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData.dark() ,
       home: MyHomePage(title: 'NG Values'),
     );
   }
@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children:[
                 Typewriter(
-                  text: values[_currentValueIndex].text,
+                  text: snapshot.data[_currentValueIndex].text,
                   textStyle: const TextStyle(
                     fontFamily: 'Satisfy',
                     fontSize: 48.0,
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     context,
                     MaterialPageRoute(builder: (context) => ValuesListScreen()),
                   ),
-                  color: Colors.white, icon: Icon(Icons.format_quote_sharp),),
+                  color: Colors.white, icon: Icon(Icons.format_quote_sharp), iconSize: 40.0,),
                 label: "Values",
               ),
 

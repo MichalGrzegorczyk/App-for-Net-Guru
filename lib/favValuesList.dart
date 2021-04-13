@@ -33,8 +33,14 @@ class FavValuesListScreen extends StatelessWidget {
     );
   }
   Widget _buildRow(Value value) {
-    return new ListTile(
-        title: new Text(value.text)
+    return new
+    Card (
+      child:ListTile(
+          leading: new Icon(Icons.format_quote_outlined, color:Colors.white,size: 33.0),
+          title: new Text(value.text, style: TextStyle(color: Colors.white, fontFamily: 'Satisfy', fontSize: 25.0),)
+      ),
+      color: Colors.green,
+      elevation: 3.0,
     );
   }
 
