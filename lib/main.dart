@@ -85,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-    void _updateValues(){
-      dbHelper.open().then((_) => dbHelper.getEntries().then((value) => {
+    void _updateValues() async{
+     await dbHelper.open().then((_) => dbHelper.getEntries().then((value) => {
         setState(() {
           values = value;
           }
@@ -122,72 +122,83 @@ class _MyHomePageState extends State<MyHomePage> {
         })
       ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-           children:[
-           Typewriter(
-            text: values[_currentValueIndex].text,
-            textStyle: const TextStyle(
-              fontFamily: 'Satisfy',
-              fontSize: 48.0,
-            ),
-             onComplete: _nextValue,
-          )
+      body: FutureBuilder<List>(
+        future: dbHelper.getEntries(),
+        initialData:[],
+        builder:(context,snapshot){
+          return snapshot.hasData ?
 
-          ],
 
-        )
+     new   Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:[
+                Typewriter(
+                  text: values[_currentValueIndex].text,
+                  textStyle: const TextStyle(
+                    fontFamily: 'Satisfy',
+                    fontSize: 48.0,
+                  ),
+                  onComplete: _nextValue,
+                )
+
+              ],
+
+            )
+        ): Center();
+        }
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.push(
-                context, MaterialPageRoute(
-                builder: (context) => AddValueScreen()
-            )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () =>
+              Navigator.push(
+                  context, MaterialPageRoute(
+                  builder: (context) => AddValueScreen()
+              )),
 
-        tooltip: 'Increment',
-        foregroundColor: Colors.black,
-        hoverColor: Colors.white,
-        backgroundColor: Colors.white,
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 8,
-      color: Colors.green,
-      child: BottomNavigationBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        fixedColor: Colors.white,
-        unselectedItemColor: Colors.white,
-        items:[
-          BottomNavigationBarItem(
-            icon: IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ValuesListScreen()),
+          tooltip: 'Increment',
+          foregroundColor: Colors.black,
+          hoverColor: Colors.white,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.add),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          notchMargin: 8,
+          color: Colors.green,
+          child: BottomNavigationBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            fixedColor: Colors.white,
+            unselectedItemColor: Colors.white,
+            items:[
+              BottomNavigationBarItem(
+                icon: IconButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ValuesListScreen()),
+                  ),
+                  color: Colors.white, icon: Icon(Icons.format_quote_sharp),),
+                label: "Values",
               ),
-            color: Colors.white, icon: Icon(Icons.format_quote_sharp),),
-            label: "Values",
+
+              BottomNavigationBarItem(
+                  icon: IconButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FavValuesListScreen()),
+                    ),
+                    color: Colors.white,
+                    icon: Icon(  Icons.favorite),),
+
+                  label: "Favourites"
+              )
+
+            ],
           ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-          BottomNavigationBarItem(
-            icon: IconButton(
-            onPressed: () => Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => FavValuesListScreen()),
-    ),
-    color: Colors.white,
-              icon: Icon(  Icons.favorite),),
 
-            label: "Favourites"
-    )
-
-        ],
-      ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
     );
   }
